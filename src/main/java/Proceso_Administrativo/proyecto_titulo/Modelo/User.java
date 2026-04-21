@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,9 +26,16 @@ public class User {
     @Column(nullable = false, length = 50)
     private String correo;
 
-    @Column(nullable = false, length = 15)
-    private String passwowrd;
+    @Column(nullable = false, length = 120)
+    private String password;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns    = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "rol_id")
+    )
+    private Set<Roles> roles = new HashSet<>();
 
 
 
