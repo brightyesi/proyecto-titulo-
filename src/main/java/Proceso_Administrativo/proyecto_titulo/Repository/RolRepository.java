@@ -8,7 +8,7 @@ import javax.management.relation.Role;
 import java.util.Optional;
 
 @Repository
-public interface RolRepository extends JpaRepository<Role,Long> {
+public interface RolRepository extends JpaRepository<Roles,Long> {
 
     Optional<Roles>finByName(Roles.NombreRol name);
 
