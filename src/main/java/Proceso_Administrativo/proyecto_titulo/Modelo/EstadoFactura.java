@@ -1,6 +1,6 @@
 package Proceso_Administrativo.proyecto_titulo.Modelo;
 
-public class EstadoFactura {
+public enum EstadoFactura {
     PENDIENTE,
     PROGRAMADA,
     PAGADA

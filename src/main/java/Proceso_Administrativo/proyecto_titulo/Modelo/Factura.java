@@ -34,6 +34,9 @@ public class Factura {
     @Column(name = "fecha_emision", nullable = false)
     private LocalDate fechaEmision;
 
+    @Column(name = "fecha_vencimiento", nullable = false)
+    private LocalDate fechaVencimiento;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 15)
     private EstadoFactura estado;
