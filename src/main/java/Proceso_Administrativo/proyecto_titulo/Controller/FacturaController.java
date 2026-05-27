@@ -1,5 +1,7 @@
 package Proceso_Administrativo.proyecto_titulo.Controller;
 
+import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResponseDTO;
+import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResquestDto;
 import Proceso_Administrativo.proyecto_titulo.Modelo.EstadoFactura;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import Proceso_Administrativo.proyecto_titulo.Service.FacturaService;
@@ -25,46 +27,53 @@ public class FacturaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Factura>> listarTodas() {
-        return new ResponseEntity<>(facturaService.obtenerTodas(), HttpStatus.OK);
+    public ResponseEntity<List<FacturaResponseDTO>> listarTodas() {
+        return ResponseEntity.ok(facturaService.obtenerTodas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity <Factura> obtenerPorId(@PathVariable Long id){
-        return facturaService.obtenerPorId(id)
-                .map(factura -> new ResponseEntity<>(factura, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @PutMapping
-    public ResponseEntity<Factura> actulizarFactura(@PathVariable Long id, @RequestBody Factura factura){
-        try{
-            Factura facturaActualuzar=facturaService.actulizarFactura(id,factura);
-            return new ResponseEntity<>(facturaActualuzar,HttpStatus.OK);
+    public ResponseEntity<FacturaResponseDTO> obtenerPorId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(facturaService.obtenerPorId(id));
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<Factura> crearFactura(@RequestBody Factura factura) {
-        Factura nuevaFactura = facturaService.guardarFactura(factura);
-        return new ResponseEntity<>(nuevaFactura, HttpStatus.CREATED);
+    public ResponseEntity<FacturaResponseDTO> crearFactura(@RequestBody FacturaResquestDto facturaRequestDTO) {
+        try {
+            FacturaResponseDTO nuevaFactura = facturaService.guardarFactura(facturaRequestDTO);
+            return new ResponseEntity<>(nuevaFactura, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<FacturaResponseDTO> actualizarFactura(
+            @PathVariable Long id,
+            @RequestBody FacturaResquestDto facturaRequestDTO) {
+        try {
+            FacturaResponseDTO facturaActualizada = facturaService.actualizarFactura(id, facturaRequestDTO);
+            return ResponseEntity.ok(facturaActualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarFactura(@PathVariable Long id) {
         facturaService.elilimarFactura(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/busqueda")
-    public ResponseEntity<List<Factura>> buscarPorEstadoYVencimiento(
+    public ResponseEntity<List<FacturaResponseDTO>> buscarPorEstadoYVencimiento(
             @RequestParam EstadoFactura estado,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaVencimiento) {
 
-        List<Factura> facturas = facturaService.obtenerPorEstadoVencimiento(estado, fechaVencimiento);
-        return new ResponseEntity<>(facturas, HttpStatus.OK);
+        List<FacturaResponseDTO> facturas = facturaService.obtenerPorEstadoVencimiento(estado, fechaVencimiento);
+        return ResponseEntity.ok(facturas);
     }
-
 }
