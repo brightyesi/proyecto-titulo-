@@ -45,4 +45,10 @@ public class Factura {
     @JoinColumn(name = "id_usuario", nullable = false)
     private User usuario;
 
+    @Column(name = "eliminado",nullable = false)
+    private boolean eliminado= false;
+
+    @Column(name = "fecha-eliminacion")
+    private LocalDate fechaEliminacion;
+
 }
