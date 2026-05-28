@@ -41,14 +41,15 @@ public class FacturaService {
     }
 
     public List<FacturaResponseDTO> obtenerTodas() {
-        return facturaRepository.findAll().stream()
+        return facturaRepository.findEliminarFalse().stream()
                 .map(this::convertirAResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    // 2. Modificado: Solo obtiene si no está eliminada
     public FacturaResponseDTO obtenerPorId(Long id) {
-        Factura factura = facturaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+        Factura factura = facturaRepository.findByIdAndEliminado(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada o está en la papelera"));
         return convertirAResponseDTO(factura);
     }
 
@@ -87,14 +88,31 @@ public class FacturaService {
         return convertirAResponseDTO(facturaActualizada);
     }
 
-    public void elilimarFactura(Long id ){
-        facturaRepository.deleteById(id);
+    public void eliminarFactura(Long id){
+        Factura factura= facturaRepository.findByIdAndEliminado(id)
+                .orElseThrow(()-> new RuntimeException("Factura no encontrada"));
+
+        if(!factura.isEliminado()){
+            throw new RuntimeException("La factura no esta en la papelera");
+        }
     }
 
     public List<FacturaResponseDTO> obtenerPorEstadoVencimiento(EstadoFactura estado, LocalDate fechaVencimiento) {
         return facturaRepository.findByEstadoAndFechaVencimiento(estado, fechaVencimiento).stream()
                 .map(this::convertirAResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    public FacturaResponseDTO restaurarFactura(Long id){
+        Factura factura = facturaRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Factura no encotrada"));
+        if (!factura.isEliminado()){
+            throw new RuntimeException("La factura no esta en la papelera");
+        }
+        factura.setEliminado(false);
+        factura.setFechaEliminacion(null);
+        Factura facturaRestaurada = facturaRepository.save(factura);
+        return convertirAResponseDTO(facturaRestaurada);
     }
 
 }
