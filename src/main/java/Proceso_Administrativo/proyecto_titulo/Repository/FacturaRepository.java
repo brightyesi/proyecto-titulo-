@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura,Long> {
@@ -15,4 +16,9 @@ public interface FacturaRepository extends JpaRepository<Factura,Long> {
             EstadoFactura estado,
             LocalDate fechaVencimiento
     );
+
+    List<Factura>findEliminarFalse();
+    Optional<Factura>findByIdAndEliminado( Long id);
+
+    List<Factura> findByEliminadoTrueAndFechaEliminacionBefore(LocalDate fechaLimite);
 }

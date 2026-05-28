@@ -64,7 +64,7 @@ public class FacturaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarFactura(@PathVariable Long id) {
-        facturaService.elilimarFactura(id);
+        facturaService.eliminarFactura(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -76,4 +76,15 @@ public class FacturaController {
         List<FacturaResponseDTO> facturas = facturaService.obtenerPorEstadoVencimiento(estado, fechaVencimiento);
         return ResponseEntity.ok(facturas);
     }
+
+    @PutMapping("/{id}/restaurar")
+    public ResponseEntity<FacturaResponseDTO> restaurarFactura (@PathVariable Long id){
+        try{
+            FacturaResponseDTO facturaRestaurada= facturaService.restaurarFactura(id);
+            return ResponseEntity.ok(facturaRestaurada);
+        }catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
 }
