@@ -112,7 +112,7 @@ public class FacturaService {
         if (!factura.isEliminado()){
             throw new RuntimeException("La factura no esta en la papelera");
         }
-        factura.setEliminado(true);
+        factura.setEliminado(false);
         factura.setFechaEliminacion(LocalDate.now());
         Factura facturaRestaurada = facturaRepository.save(factura);
         return convertirAResponseDTO(facturaRestaurada);
