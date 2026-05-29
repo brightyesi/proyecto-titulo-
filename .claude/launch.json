@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "falabella-clone",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3333", "frontend"],
+      "port": 3333
+    }
+  ]
+}

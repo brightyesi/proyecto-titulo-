@@ -48,7 +48,7 @@ public class Factura {
     @Column(name = "eliminado",nullable = false)
     private boolean eliminado= false;
 
-    @Column(name = "fecha-eliminacion")
+    @Column(name = "fecha_eliminacion")
     private LocalDate fechaEliminacion;
 
 }

@@ -14,7 +14,7 @@ public class MailConfig {
     private String host;
 
     @Value("${spring.mail.port}")
-    private String port;
+    private int port;
 
     @Value("${spring.mail.username}")
     private String username;
