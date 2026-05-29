@@ -6,6 +6,7 @@ import Proceso_Administrativo.proyecto_titulo.Modelo.EstadoFactura;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import Proceso_Administrativo.proyecto_titulo.Modelo.User;
 import Proceso_Administrativo.proyecto_titulo.Repository.FacturaRepository;
+import Proceso_Administrativo.proyecto_titulo.Repository.HistorialEstadoRepository;
 import Proceso_Administrativo.proyecto_titulo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,13 @@ public class FacturaService {
 
     private final FacturaRepository facturaRepository;
     private final UserRepository userRepository;
+    private final HistorialEstadoRepository historialEstadoRepository;
 
     @Autowired
-    public FacturaService (FacturaRepository facturaRepository, UserRepository userRepository){
+    public FacturaService (FacturaRepository facturaRepository, UserRepository userRepository, HistorialEstadoRepository historialEstadoRepository){
         this.facturaRepository=facturaRepository;
         this.userRepository=userRepository;
+        this.historialEstadoRepository = historialEstadoRepository;
     }
     private FacturaResponseDTO convertirAResponseDTO(Factura factura) {
         return FacturaResponseDTO.builder()
@@ -76,6 +79,7 @@ public class FacturaService {
 
         User user=userRepository.findById(dto.getUsuarioId())
                 .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+        EstadoFactura estadoAnterior =facturaExistente.getEstado();
         facturaExistente.setFolio(dto.getFolio());
         facturaExistente.setEmisor(dto.getEmisor());
         facturaExistente.setMontoTotal(dto.getMontoTotal());
