@@ -18,9 +18,7 @@ public class ProveedorService {
         this.proveedorRepository = proveedorRepository;
     }
 
-    // ──────────────────────────────────────────
     // Crear proveedor
-    // ──────────────────────────────────────────
     public ProveedorResponseDTO crear(ProveedorRequestDTO request) {
         if (proveedorRepository.existsByRutProveedor(request.getRutProveedor())) {
             throw new IllegalArgumentException(
@@ -39,9 +37,7 @@ public class ProveedorService {
         return toResponse(proveedorRepository.save(proveedor));
     }
 
-    // ──────────────────────────────────────────
     // Listar todos los activos
-    // ──────────────────────────────────────────
     public List<ProveedorResponseDTO> listar() {
         return proveedorRepository.findAll()
                 .stream()
@@ -50,18 +46,14 @@ public class ProveedorService {
                 .collect(Collectors.toList());
     }
 
-    // ──────────────────────────────────────────
     // Obtener por ID
-    // ──────────────────────────────────────────
     public ProveedorResponseDTO obtenerPorId(Long id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
         return toResponse(proveedor);
     }
 
-    // ──────────────────────────────────────────
     // Actualizar
-    // ──────────────────────────────────────────
     public ProveedorResponseDTO actualizar(Long id, ProveedorRequestDTO request) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
@@ -73,9 +65,7 @@ public class ProveedorService {
         return toResponse(proveedorRepository.save(proveedor));
     }
 
-    // ──────────────────────────────────────────
     // Desactivar (soft delete)
-    // ──────────────────────────────────────────
     public void desactivar(Long id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
@@ -83,9 +73,7 @@ public class ProveedorService {
         proveedorRepository.save(proveedor);
     }
 
-    // ──────────────────────────────────────────
     // Helper
-    // ──────────────────────────────────────────
     private ProveedorResponseDTO toResponse(Proveedor p) {
         return ProveedorResponseDTO.builder()
                 .id(p.getId())

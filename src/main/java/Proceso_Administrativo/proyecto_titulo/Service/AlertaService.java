@@ -50,7 +50,7 @@ public class AlertaService {
             LocalDate fechaObjetivo = LocalDate.now().plusDays(config.getDiasPrevios());
 
             List<Factura> facturas = facturaRepository
-                    .findByEstadoAndFechaVencimiento(EstadoFactura.PENDIENTE, fechaObjetivo);
+                    .findByEstadoAndFechaVencimientoAndEliminadoFalse(EstadoFactura.PENDIENTE, fechaObjetivo);
 
             log.info("Revisando alertas de {} dias -> fecha objetivo: {} -> {} facturas encontradas",
                     config.getDiasPrevios(), fechaObjetivo, facturas.size());

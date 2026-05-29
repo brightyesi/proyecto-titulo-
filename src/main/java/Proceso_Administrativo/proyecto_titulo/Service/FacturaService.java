@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,7 +97,7 @@ public class FacturaService {
     }
 
     public List<FacturaResponseDTO> obtenerPorEstadoVencimiento(EstadoFactura estado, LocalDate fechaVencimiento) {
-        return facturaRepository.findByEstadoAndFechaVencimiento(estado, fechaVencimiento).stream()
+        return facturaRepository.findByEstadoAndFechaVencimientoAndEliminadoFalse(estado, fechaVencimiento).stream()
                 .map(this::convertirAResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -116,7 +115,7 @@ public class FacturaService {
     }
 
     public List<FacturaResponseDTO>obtenerEliminadas(){
-        return facturaRepository.findByEliminarTrue()
+        return facturaRepository.findByEliminadoTrue()
                 .stream().map(this::convertirAResponseDTO)
                 .collect(Collectors.toList());
     }

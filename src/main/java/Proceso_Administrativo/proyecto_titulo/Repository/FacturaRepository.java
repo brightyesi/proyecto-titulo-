@@ -17,10 +17,19 @@ public interface FacturaRepository extends JpaRepository<Factura,Long> {
             LocalDate fechaVencimiento
     );
 
-    List<Factura>findByEliminarTrue();
-
     List<Factura>findByEliminadoFalse();
     Optional<Factura>findByIdAndEliminadoFalse(Long id);
 
-    List<Factura> findByEliminadoTrueAndFechaEliminacionBefore(LocalDate fechaLimite);
+    // para la papelera
+    List<Factura> findByEliminadoTrue();
+
+    // motor de  alerta, no se consideran las ya eliminadas
+    List<Factura> findByEstadoAndFechaVencimientoAndEliminadoFalse(
+            EstadoFactura estado,
+            LocalDate fechaVencimiento
+    );
+
+    List<Factura> findByEliminadoTrueAndFechaEliminacionBefore(
+            LocalDate fechaLimite
+    );
 }

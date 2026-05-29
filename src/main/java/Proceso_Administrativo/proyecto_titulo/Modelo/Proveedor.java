@@ -18,7 +18,7 @@ public class Proveedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "rut-´proveedor", nullable = false, unique = true, length = 12)
+    @Column(name = "rut_proveedor", nullable = false, unique = true, length = 12)
     private String rutProveedor;
 
     @Column(name = "nombre_comercial", nullable = false, length = 100)
