@@ -41,14 +41,14 @@ public class FacturaService {
     }
 
     public List<FacturaResponseDTO> obtenerTodas() {
-        return facturaRepository.findEliminarFalse().stream()
+        return facturaRepository.findByEliminadoFalse().stream()
                 .map(this::convertirAResponseDTO)
                 .collect(Collectors.toList());
     }
 
     // 2. Modificado: Solo obtiene si no está eliminada
     public FacturaResponseDTO obtenerPorId(Long id) {
-        Factura factura = facturaRepository.findByIdAndEliminado(id)
+        Factura factura = facturaRepository.findByIdAndEliminadoFalse(id)
                 .orElseThrow(() -> new RuntimeException("Factura no encontrada o está en la papelera"));
         return convertirAResponseDTO(factura);
     }
@@ -89,7 +89,7 @@ public class FacturaService {
     }
 
     public void eliminarFactura(Long id){
-        Factura factura= facturaRepository.findByIdAndEliminado(id)
+        Factura factura= facturaRepository.findByIdAndEliminadoFalse(id)
                 .orElseThrow(()-> new RuntimeException("Factura no encontrada"));
 
         if(!factura.isEliminado()){
