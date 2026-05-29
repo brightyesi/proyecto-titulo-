@@ -17,6 +17,8 @@ public interface FacturaRepository extends JpaRepository<Factura,Long> {
             LocalDate fechaVencimiento
     );
 
+    List<Factura>findByEliminarTrue();
+
     List<Factura>findByEliminadoFalse();
     Optional<Factura>findByIdAndEliminadoFalse(Long id);
 

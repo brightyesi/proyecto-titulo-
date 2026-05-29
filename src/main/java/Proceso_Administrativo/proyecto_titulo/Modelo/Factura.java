@@ -48,6 +48,9 @@ public class Factura {
     @Column(name = "eliminado",nullable = false)
     private boolean eliminado= false;
 
+    @Column(name = "url-Documento",length = 5000)
+    private String urlDocumento;
+
     @Column(name = "fecha_eliminacion")
     private LocalDate fechaEliminacion;
 

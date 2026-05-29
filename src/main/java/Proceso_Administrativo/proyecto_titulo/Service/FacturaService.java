@@ -115,4 +115,10 @@ public class FacturaService {
         return convertirAResponseDTO(facturaRestaurada);
     }
 
+    public List<FacturaResponseDTO>obtenerEliminadas(){
+        return facturaRepository.findByEliminarTrue()
+                .stream().map(this::convertirAResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 }

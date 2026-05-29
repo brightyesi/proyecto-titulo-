@@ -87,4 +87,9 @@ public class FacturaController {
         }
     }
 
+    @GetMapping("/papelera")
+    public ResponseEntity<List<FacturaResponseDTO>> verPapelera(){
+        return ResponseEntity.ok(facturaService.obtenerEliminadas());
+    }
+
 }

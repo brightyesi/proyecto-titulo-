@@ -2,6 +2,7 @@ package Proceso_Administrativo.proyecto_titulo.Scheduler;
 
 import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import Proceso_Administrativo.proyecto_titulo.Repository.FacturaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Component
 public class FacturaLimpiezaScheduler {
 
@@ -31,7 +33,7 @@ public class FacturaLimpiezaScheduler {
         if (!facturasParaBorrarDefinitivamente.isEmpty()) {
             // Aquí sí se hace el borrado físico y definitivo de la Base de Datos
             facturaRepository.deleteAll(facturasParaBorrarDefinitivamente);
-            System.out.println("Se eliminaron definitivamente " + facturasParaBorrarDefinitivamente.size() + " facturas viejas de la papelera.");
+            log.info("Factura eliminadas definitivamente: {}", facturasParaBorrarDefinitivamente.size());
         }
     }
 
