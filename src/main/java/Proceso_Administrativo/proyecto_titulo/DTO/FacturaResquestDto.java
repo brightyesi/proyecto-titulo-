@@ -21,17 +21,17 @@ public class FacturaResquestDto {
     @NotBlank(message = "El emisor es obligatorio")
     private String emisor;
 
-    @NotBlank(message = "El monto total es obligatorio")
+    @NotNull(message = "El monto total es obligatorio")
     @Positive(message = "El monto debe ser mayor a cero")
     private BigDecimal montoTotal;
 
-    @NotBlank(message = "La fecha de emision es obligatoria")
+    @NotNull(message = "La fecha de emision es obligatoria")
     private LocalDate fechaEmision;
 
-    @NotBlank(message = "La fecha de vencimiento es obligatoria")
+    @NotNull(message = "La fecha de vencimiento es obligatoria")
     private LocalDate fechaVencimiento;
 
-    @NotBlank(message = "El estado es obligatorio")
+    @NotNull(message = "El estado es obligatorio")
     private EstadoFactura estado;
 
     @NotNull(message = "El ID del usuario es obligatorio")
