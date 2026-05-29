@@ -23,7 +23,7 @@ public class ResgisterResquest {
     private String correo;
 
     @NotBlank(message = "El Contraseña es obligatorio")
-    @Size(max = 6, message = "El contraseña no debe superar los 6 caracteres")
+    @Size(max = 8, message = "El contraseña no debe superar los 8 caracteres")
     private String password;
 
     @NotBlank(message = "rol es obligatorio")
