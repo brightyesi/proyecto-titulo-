@@ -3,8 +3,11 @@ package Proceso_Administrativo.proyecto_titulo.Controller;
 import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResponseDTO;
 import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResquestDto;
 import Proceso_Administrativo.proyecto_titulo.Modelo.EstadoFactura;
+import Proceso_Administrativo.proyecto_titulo.DTO.HistorialEstadoResponseDTO;
+import Proceso_Administrativo.proyecto_titulo.Service.HistorialEstadoService;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import Proceso_Administrativo.proyecto_titulo.Service.FacturaService;
+import Proceso_Administrativo.proyecto_titulo.Service.HistorialEstadoService;
 import jakarta.persistence.GeneratedValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,10 +23,13 @@ import java.util.List;
 public class FacturaController {
 
     private final FacturaService facturaService;
+    private final HistorialEstadoService historialEstadoService;
 
     @Autowired
-    public FacturaController(FacturaService facturaService) {
+    public FacturaController(FacturaService facturaService, HistorialEstadoService historialEstadoService) {
+
         this.facturaService = facturaService;
+        this.historialEstadoService = historialEstadoService;
     }
 
     @GetMapping
@@ -92,4 +98,8 @@ public class FacturaController {
         return ResponseEntity.ok(facturaService.obtenerEliminadas());
     }
 
+    @GetMapping("/{id}/historial")
+    public ResponseEntity<List<HistorialEstadoResponseDTO>> verHistorial(@PathVariable Long id) {
+        return ResponseEntity.ok(historialEstadoService.obtenerHistorialPorFactura(id));
+    }
 }
