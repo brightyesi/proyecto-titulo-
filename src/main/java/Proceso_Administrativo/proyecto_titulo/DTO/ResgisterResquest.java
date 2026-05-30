@@ -3,6 +3,7 @@ package Proceso_Administrativo.proyecto_titulo.DTO;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class ResgisterResquest {
     @Size(min = 8, max = 10,message = "El contraseña no debe superar los 8 caracteres")
     private String password;
 
-    @NotBlank(message = "rol es obligatorio")
+    @NotNull(message = "rol es obligatorio")
     private Roles roles;
 
 }

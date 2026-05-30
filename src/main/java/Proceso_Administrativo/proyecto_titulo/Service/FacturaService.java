@@ -8,6 +8,7 @@ import Proceso_Administrativo.proyecto_titulo.Modelo.User;
 import Proceso_Administrativo.proyecto_titulo.Repository.FacturaRepository;
 import Proceso_Administrativo.proyecto_titulo.Repository.HistorialEstadoRepository;
 import Proceso_Administrativo.proyecto_titulo.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class FacturaService {
                 .fechaVencimiento(factura.getFechaVencimiento()) // Agregado
                 .estado(factura.getEstado())
                 .usuarioId(factura.getUsuario().getId())
-                .usuarioNombre(factura.getUsuario().getUsername()) // Cambia 'getUsername()' por el campo real de tu User
+                .usuarioNombre(factura.getUsuario().getNombre())
                 .build();
     }
 
@@ -91,13 +92,14 @@ public class FacturaService {
         return convertirAResponseDTO(facturaActualizada);
     }
 
-    public void eliminarFactura(Long id){
-        Factura factura= facturaRepository.findByIdAndEliminadoFalse(id)
-                .orElseThrow(()-> new RuntimeException("Factura no encontrada"));
+    @Transactional
+    public void eliminarFactura(Long id) {
+        Factura factura = facturaRepository.findByIdAndEliminadoFalse(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
 
-        if(!factura.isEliminado()){
-            throw new RuntimeException("La factura no esta en la papelera");
-        }
+        factura.setEliminado(true);
+        factura.setFechaEliminacion(LocalDate.now());
+        facturaRepository.save(factura);
     }
 
     public List<FacturaResponseDTO> obtenerPorEstadoVencimiento(EstadoFactura estado, LocalDate fechaVencimiento) {
@@ -112,7 +114,7 @@ public class FacturaService {
         if (!factura.isEliminado()){
             throw new RuntimeException("La factura no esta en la papelera");
         }
-        factura.setEliminado(false);
+        factura.setEliminado(true);
         factura.setFechaEliminacion(LocalDate.now());
         Factura facturaRestaurada = facturaRepository.save(factura);
         return convertirAResponseDTO(facturaRestaurada);

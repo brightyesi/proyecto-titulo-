@@ -4,6 +4,7 @@ import Proceso_Administrativo.proyecto_titulo.DTO.ProveedorRequestDTO;
 import Proceso_Administrativo.proyecto_titulo.DTO.ProveedorResponseDTO;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Proveedor;
 import Proceso_Administrativo.proyecto_titulo.Repository.ProveedorRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ProveedorService {
     }
 
     // Crear proveedor
+    @Transactional
     public ProveedorResponseDTO crear(ProveedorRequestDTO request) {
         if (proveedorRepository.existsByRutProveedor(request.getRutProveedor())) {
             throw new IllegalArgumentException(
@@ -38,6 +40,7 @@ public class ProveedorService {
     }
 
     // Listar todos los activos
+    @Transactional
     public List<ProveedorResponseDTO> listar() {
         return proveedorRepository.findAll()
                 .stream()
@@ -47,6 +50,7 @@ public class ProveedorService {
     }
 
     // Obtener por ID
+    @Transactional
     public ProveedorResponseDTO obtenerPorId(Long id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
@@ -54,6 +58,7 @@ public class ProveedorService {
     }
 
     // Actualizar
+    @Transactional
     public ProveedorResponseDTO actualizar(Long id, ProveedorRequestDTO request) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
@@ -66,6 +71,7 @@ public class ProveedorService {
     }
 
     // Desactivar (soft delete)
+    @Transactional
     public void desactivar(Long id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));

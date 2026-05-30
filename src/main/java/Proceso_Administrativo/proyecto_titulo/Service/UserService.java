@@ -8,6 +8,7 @@ import Proceso_Administrativo.proyecto_titulo.Modelo.User;
 import Proceso_Administrativo.proyecto_titulo.Repository.RolRepository;
 import Proceso_Administrativo.proyecto_titulo.Repository.UserRepository;
 import Proceso_Administrativo.proyecto_titulo.Security.JwtService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +41,7 @@ public class UserService {
     // ──────────────────────────────────────────
     // REGISTRO
     // ──────────────────────────────────────────
+    @Transactional
     public UserResponse regitrar(ResgisterResquest resquest) {
         if (userRepository.existsByEmail(resquest.getCorreo())) {
             throw new IllegalArgumentException(
@@ -68,7 +70,8 @@ public class UserService {
 
     // ──────────────────────────────────────────
     // LOGIN
-    // ──────────────────────────────────────────
+    // ──────────────────────────────────────────}
+    @Transactional
     public UserResponse login(LoginRequest request) {
         try {
             // Spring Security valida email + password automáticamente
