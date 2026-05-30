@@ -15,18 +15,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController (UserService userService){
+        this.userService=userService;
+    }
 
     @PostMapping("/registro")
-    public ResponseEntity<?> registrar(@Valid @RequestBody ResgisterResquest request){
+    public ResponseEntity<?> registrar(@Valid @RequestBody ResgisterResquest request) {
         try {
             UserResponse response = userService.regitrar(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(new MensajeResponse(e.getMessage(), false));
-        }  catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new MensajeResponse(e.getMessage(), false));
