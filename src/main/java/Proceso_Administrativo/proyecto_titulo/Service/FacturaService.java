@@ -4,6 +4,7 @@ import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResponseDTO;
 import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResquestDto;
 import Proceso_Administrativo.proyecto_titulo.Modelo.EstadoFactura;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
+import Proceso_Administrativo.proyecto_titulo.Modelo.HistorialEstado;
 import Proceso_Administrativo.proyecto_titulo.Modelo.User;
 import Proceso_Administrativo.proyecto_titulo.Repository.FacturaRepository;
 import Proceso_Administrativo.proyecto_titulo.Repository.HistorialEstadoRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,21 +76,37 @@ public class FacturaService {
         return convertirAResponseDTO(nuevaFactura);
     }
 
+    @Transactional
     public FacturaResponseDTO actualizarFactura(Long id, FacturaResquestDto dto){
-        Factura facturaExistente = facturaRepository.findById(id)
+        Factura facturaExistente= facturaRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Factura no encotrada"));
 
-        User user=userRepository.findById(dto.getUsuarioId())
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
-        EstadoFactura estadoAnterior =facturaExistente.getEstado();
+        User user =userRepository.findById(dto.getUsuarioId())
+                .orElseThrow(()-> new RuntimeException("Usuario no encotrado"));
+
+        // 1. Guardamos el estado que tenía antes de modificarlo
+        EstadoFactura estadoAnterior= facturaExistente.getEstado();
+        EstadoFactura estadoNuevo = dto.getEstado();
+
+        // 2. Actualizamos los datos de la factura
         facturaExistente.setFolio(dto.getFolio());
         facturaExistente.setEmisor(dto.getEmisor());
         facturaExistente.setMontoTotal(dto.getMontoTotal());
-        facturaExistente.setFechaEmision(dto.getFechaEmision());
-        facturaExistente.setFechaVencimiento(dto.getFechaVencimiento()); // Agregado
+        facturaExistente.setFechaVencimiento(dto.getFechaVencimiento());
         facturaExistente.setEstado(dto.getEstado());
         facturaExistente.setUsuario(user);
-        Factura facturaActualizada = facturaRepository.save(facturaExistente);
+
+        Factura facturaActualizada= facturaRepository.save(facturaExistente);
+
+        // 3. AGREGADO: Registramos en el historial si el estado cambi
+        if (estadoAnterior != estadoNuevo){
+            HistorialEstado historialEstado =HistorialEstado.builder()
+                    .factura(facturaActualizada)
+                    .estadoAterior(estadoAnterior)
+                    .estadoNuevo(estadoNuevo)
+                    .fechaCambio(LocalDateTime.now())
+                    .build();
+        }
         return convertirAResponseDTO(facturaActualizada);
     }
 
