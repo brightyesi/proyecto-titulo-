@@ -21,21 +21,16 @@ public class HistorialEstado {
     private Long idHistorial;
 
     @ManyToOne
-    @JoinColumn(name = "idFactura ", nullable = false)
+    @JoinColumn(name = "id_factura", nullable = false)
     private Factura factura;
-
-    @Enumerated
-    @Column(nullable = false)
-    private EstadoFactura estado;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_anterior")
-    private EstadoFactura estadoAterior;
+    private EstadoFactura estadoAnterior;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_nuevo")
     private EstadoFactura estadoNuevo;
-
 
     @Column(name = "fecha_cambio",nullable = false)
     private LocalDateTime fechaCambio;

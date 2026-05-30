@@ -102,10 +102,12 @@ public class FacturaService {
         if (estadoAnterior != estadoNuevo){
             HistorialEstado historialEstado =HistorialEstado.builder()
                     .factura(facturaActualizada)
-                    .estadoAterior(estadoAnterior)
+                    .estadoAnterior(estadoAnterior)
                     .estadoNuevo(estadoNuevo)
                     .fechaCambio(LocalDateTime.now())
                     .build();
+
+            historialEstadoRepository.save(historialEstado);
         }
         return convertirAResponseDTO(facturaActualizada);
     }
@@ -132,8 +134,8 @@ public class FacturaService {
         if (!factura.isEliminado()){
             throw new RuntimeException("La factura no esta en la papelera");
         }
-        factura.setEliminado(true);
-        factura.setFechaEliminacion(LocalDate.now());
+        factura.setEliminado(false);
+        factura.setFechaEliminacion(null);
         Factura facturaRestaurada = facturaRepository.save(factura);
         return convertirAResponseDTO(facturaRestaurada);
     }
