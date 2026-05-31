@@ -8,8 +8,6 @@ import Proceso_Administrativo.proyecto_titulo.DTO.HistorialEstadoResponseDTO;
 import Proceso_Administrativo.proyecto_titulo.Service.HistorialEstadoService;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import Proceso_Administrativo.proyecto_titulo.Service.FacturaService;
-import Proceso_Administrativo.proyecto_titulo.Service.HistorialEstadoService;
-import jakarta.persistence.GeneratedValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
