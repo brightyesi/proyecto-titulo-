@@ -2,6 +2,7 @@ package Proceso_Administrativo.proyecto_titulo.Controller;
 
 import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResponseDTO;
 import Proceso_Administrativo.proyecto_titulo.DTO.FacturaResquestDto;
+import Proceso_Administrativo.proyecto_titulo.DTO.MensajeResponse;
 import Proceso_Administrativo.proyecto_titulo.Modelo.EstadoFactura;
 import Proceso_Administrativo.proyecto_titulo.DTO.HistorialEstadoResponseDTO;
 import Proceso_Administrativo.proyecto_titulo.Service.HistorialEstadoService;
@@ -14,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -53,6 +55,19 @@ public class FacturaController {
             return new ResponseEntity<>(nuevaFactura, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{id}/documento")
+    public ResponseEntity<?> subirDocumento(
+            @PathVariable Long id,
+            @RequestParam("archivo") MultipartFile archivo) {
+        try {
+            FacturaResponseDTO factura = facturaService.adjuntarDocumento(id, archivo);
+            return ResponseEntity.ok(factura);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest()
+                    .body(new MensajeResponse(e.getMessage(), false));
         }
     }
 

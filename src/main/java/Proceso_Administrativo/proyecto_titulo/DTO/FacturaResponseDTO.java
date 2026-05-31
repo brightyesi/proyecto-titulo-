@@ -23,4 +23,5 @@ public class FacturaResponseDTO {
     private EstadoFactura estado;
     private Long usuarioId;
     private String usuarioNombre;
+    private String urlDocumento;
 }

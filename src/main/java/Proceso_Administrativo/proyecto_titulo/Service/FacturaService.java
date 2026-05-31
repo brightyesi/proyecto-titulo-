@@ -12,6 +12,7 @@ import Proceso_Administrativo.proyecto_titulo.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,12 +25,17 @@ public class FacturaService {
     private final FacturaRepository facturaRepository;
     private final UserRepository userRepository;
     private final HistorialEstadoRepository historialEstadoRepository;
+    private final AlmacenamientoService almacenamientoService;
 
     @Autowired
-    public FacturaService (FacturaRepository facturaRepository, UserRepository userRepository, HistorialEstadoRepository historialEstadoRepository){
+    public FacturaService (FacturaRepository facturaRepository,
+                           UserRepository userRepository,
+                           HistorialEstadoRepository historialEstadoRepository,
+                           AlmacenamientoService almacenamientoService) {
         this.facturaRepository=facturaRepository;
         this.userRepository=userRepository;
         this.historialEstadoRepository = historialEstadoRepository;
+        this.almacenamientoService = almacenamientoService;
     }
     private FacturaResponseDTO convertirAResponseDTO(Factura factura) {
         return FacturaResponseDTO.builder()
@@ -42,6 +48,7 @@ public class FacturaService {
                 .estado(factura.getEstado())
                 .usuarioId(factura.getUsuario().getId())
                 .usuarioNombre(factura.getUsuario().getNombre())
+                .urlDocumento(factura.getUrlDocumento())
                 .build();
     }
 
@@ -146,4 +153,17 @@ public class FacturaService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public FacturaResponseDTO adjuntarDocumento(Long id, MultipartFile archivo) {
+        //busca la factura
+        Factura factura = facturaRepository.findByIdAndEliminadoFalse(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+        // guarda el archivo y obtiene la ruta
+        String ruta = almacenamientoService.guardarArchivo(archivo, id);
+        // asocia la ruta a la factura
+        factura.setUrlDocumento(ruta);
+        Factura facturaActualizada= facturaRepository.save(factura);
+
+        return convertirAResponseDTO(facturaActualizada);
+    }
 }
