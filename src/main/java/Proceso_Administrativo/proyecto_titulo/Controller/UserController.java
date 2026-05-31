@@ -2,7 +2,6 @@ package Proceso_Administrativo.proyecto_titulo.Controller;
 
 
 import Proceso_Administrativo.proyecto_titulo.DTO.LoginRequest;
-import Proceso_Administrativo.proyecto_titulo.DTO.MensajeResponse;
 import Proceso_Administrativo.proyecto_titulo.DTO.ResgisterResquest;
 import Proceso_Administrativo.proyecto_titulo.DTO.UserResponse;
 import Proceso_Administrativo.proyecto_titulo.Service.UserService;
@@ -18,35 +17,19 @@ public class UserController {
     private final UserService userService;
 
     public UserController (UserService userService){
-        this.userService=userService;
+
+        this.userService = userService;
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<?> registrar(@Valid @RequestBody ResgisterResquest request) {
-        try {
-            UserResponse response = userService.regitrar(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(new MensajeResponse(e.getMessage(), false));
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new MensajeResponse(e.getMessage(), false));
-        }
+    public ResponseEntity<UserResponse> registrar(@Valid @RequestBody ResgisterResquest request) {
+        UserResponse response = userService.regitrar(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
-        try {
-            UserResponse response = userService.login(request);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(new MensajeResponse(e.getMessage(), false));
-        }
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+        UserResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
-
 }
