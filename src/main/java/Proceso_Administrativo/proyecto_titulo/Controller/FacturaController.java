@@ -10,10 +10,13 @@ import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import Proceso_Administrativo.proyecto_titulo.Service.FacturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -114,5 +117,16 @@ public class FacturaController {
     @GetMapping("/{id}/historial")
     public ResponseEntity<List<HistorialEstadoResponseDTO>> verHistorial(@PathVariable Long id) {
         return ResponseEntity.ok(historialEstadoService.obtenerHistorialPorFactura(id));
+    }
+
+    @GetMapping("{id}/documento")
+    public ResponseEntity<Resource> verDocumento(@PathVariable Long id) {
+        Resource recurso = facturaService.obtenerDocumento(id);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=\"" + recurso.getFilename() + "\"")
+                .body(recurso);
     }
 }

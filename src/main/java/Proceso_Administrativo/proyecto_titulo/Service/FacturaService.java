@@ -11,6 +11,7 @@ import Proceso_Administrativo.proyecto_titulo.Repository.HistorialEstadoReposito
 import Proceso_Administrativo.proyecto_titulo.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -165,5 +166,17 @@ public class FacturaService {
         Factura facturaActualizada= facturaRepository.save(factura);
 
         return convertirAResponseDTO(facturaActualizada);
+    }
+
+    public Resource obtenerDocumento(Long id) {
+
+        Factura factura = facturaRepository.findByIdAndEliminadoFalse(id)
+                .orElseThrow(() -> new RuntimeException("Factura no encontrada"));
+
+        if (factura.getUrlDocumento() == null || factura.getUrlDocumento().isBlank()) {
+            throw new RuntimeException("La factura no tiene documento adjunto");
+        }
+
+        return almacenamientoService.cargarArchivo(factura.getUrlDocumento());
     }
 }

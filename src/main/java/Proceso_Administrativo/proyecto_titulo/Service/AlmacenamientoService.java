@@ -1,9 +1,12 @@
 package Proceso_Administrativo.proyecto_titulo.Service;
 
+import Proceso_Administrativo.proyecto_titulo.Modelo.Factura;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.core.io.Resource;
+import java.net.MalformedURLException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -52,5 +55,20 @@ public class AlmacenamientoService {
             return nombreOriginal.substring(nombreOriginal.lastIndexOf("."));
         }
         return "";
+    }
+
+    public Resource cargarArchivo(String rutaArchivo)  {
+        try {
+            Path path = Paths.get(rutaArchivo);
+            Resource recurso = new UrlResource(path.toUri());
+
+            if (recurso.exists() && recurso.isReadable()) {
+                return recurso;
+            } else {
+                throw new RuntimeException("No se puede leer el archivo: " + rutaArchivo);
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error al cargar el archivo: " + e.getMessage());
+        }
     }
 }
