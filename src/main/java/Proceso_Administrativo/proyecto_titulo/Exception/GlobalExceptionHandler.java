@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,5 +41,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MensajeResponse> manejarRuntime(RuntimeException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new MensajeResponse(ex.getMessage(), false));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<MensajeResponse> manejarAccesoDenegado(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new MensajeResponse("No tienes permiso para realizar esta accion", false));
     }
 }

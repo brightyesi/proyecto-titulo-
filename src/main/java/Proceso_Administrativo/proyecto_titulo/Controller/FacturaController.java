@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,6 +53,7 @@ public class FacturaController {
         return ResponseEntity.ok(facturaService.actualizarFactura(id, dto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarFactura(@PathVariable Long id) {
         facturaService.eliminarFactura(id);
@@ -65,11 +67,13 @@ public class FacturaController {
         return ResponseEntity.ok(facturaService.obtenerPorEstadoVencimiento(estado, fechaVencimiento));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{id}/restaurar")
     public ResponseEntity<FacturaResponseDTO> restaurarFactura(@PathVariable Long id) {
         return ResponseEntity.ok(facturaService.restaurarFactura(id));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/papelera")
     public ResponseEntity<List<FacturaResponseDTO>> verPapelera() {
         return ResponseEntity.ok(facturaService.obtenerEliminadas());
