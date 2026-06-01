@@ -23,7 +23,6 @@ public class Roles {
     private NombreRol nameRol;
 
     public enum NombreRol {
-        ROL_ADMIN,
         ROLE_ADMINISTRADOR,
         ROLE_EJECUTIVO
     }

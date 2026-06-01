@@ -87,10 +87,10 @@ public class FacturaService {
     @Transactional
     public FacturaResponseDTO actualizarFactura(Long id, FacturaResquestDto dto){
         Factura facturaExistente= facturaRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Factura no encotrada"));
+                .orElseThrow(()-> new RuntimeException("Factura no encontrada"));
 
         User user =userRepository.findById(dto.getUsuarioId())
-                .orElseThrow(()-> new RuntimeException("Usuario no encotrado"));
+                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
 
         // 1. Guardamos el estado que tenía antes de modificarlo
         EstadoFactura estadoAnterior= facturaExistente.getEstado();
