@@ -32,4 +32,10 @@ public interface FacturaRepository extends JpaRepository<Factura,Long> {
     List<Factura> findByEliminadoTrueAndFechaEliminacionBefore(
             LocalDate fechaLimite
     );
+
+    List<Factura> findByEstadoAndEliminadoFalseAndFechaVencimientoBetween(
+            EstadoFactura estado,
+            LocalDate inicio,
+            LocalDate fin
+    );
 }
