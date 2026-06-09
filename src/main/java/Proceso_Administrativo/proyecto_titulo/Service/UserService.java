@@ -3,6 +3,7 @@ package Proceso_Administrativo.proyecto_titulo.Service;
 import Proceso_Administrativo.proyecto_titulo.DTO.LoginRequest;
 import Proceso_Administrativo.proyecto_titulo.DTO.ResgisterResquest;
 import Proceso_Administrativo.proyecto_titulo.DTO.UserResponse;
+import Proceso_Administrativo.proyecto_titulo.DTO.UsuarioResponse;
 import Proceso_Administrativo.proyecto_titulo.Modelo.Roles;
 import Proceso_Administrativo.proyecto_titulo.Modelo.User;
 import Proceso_Administrativo.proyecto_titulo.Repository.RolRepository;
@@ -16,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.AuthenticationException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -109,5 +113,56 @@ public class UserService {
                 usuario.getEmail(),
                 usuario.getRol().getNameRol().name()
         );
+    }
+
+    //solo ADmIN
+    @Transactional
+    public UsuarioResponse crearUsuario(ResgisterResquest resquest) {
+        if (userRepository.existsByEmail(resquest.getCorreo())) {
+            throw new IllegalArgumentException(
+                    "Ya existe un usuario con el email: " + resquest.getCorreo());
+        }
+
+        Roles rol = rolRepository.findByNameRol(resquest.getRoles().getNameRol())
+                .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado."));
+
+        User usuario = User.builder()
+                .nombre(resquest.getNombre())
+                .email(resquest.getCorreo())
+                .password(passwordEncoder.encode(resquest.getPassword()))
+                .rol(rol)
+                .activo(true)
+                .build();
+        usuario = userRepository.save(usuario);
+        return toUsuarioResponse(usuario);
+    }
+
+    //listar los usuarios
+    public List<UsuarioResponse> listarUsuarios() {
+        return userRepository.findAll().stream()
+                .map(this::toUsuarioResponse)
+                .collect(Collectors.toList());
+    }
+
+    // elimina/desactiva usuarios
+
+    @Transactional
+    public void eliminarUsuario(Long id) {
+        User usuario = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+        usuario.setActivo(false);
+        userRepository.save(usuario);
+    }
+
+    //helper
+
+    private UsuarioResponse toUsuarioResponse(User usuario) {
+        return UsuarioResponse.builder()
+                .id(usuario.getId())
+                .nombre(usuario.getNombre())
+                .email(usuario.getEmail())
+                .rol(usuario.getRol().getNameRol().name())
+                .activo(usuario.isActivo())
+                .build();
     }
 }
