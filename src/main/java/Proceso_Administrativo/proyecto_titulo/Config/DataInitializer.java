@@ -25,6 +25,7 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         if (rolRepository.count() == 0) {
+            rolRepository.save(new Roles(null, Roles.NombreRol.ROLE_ADMIN));
             rolRepository.save(new Roles(null, Roles.NombreRol.ROLE_ADMINISTRADOR));
             rolRepository.save(new Roles(null, Roles.NombreRol.ROLE_EJECUTIVO));
             log.info("Roles iniciados insertados.");

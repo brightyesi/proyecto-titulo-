@@ -23,6 +23,7 @@ public class Roles {
     private NombreRol nameRol;
 
     public enum NombreRol {
+        ROLE_ADMIN,
         ROLE_ADMINISTRADOR,
         ROLE_EJECUTIVO
     }

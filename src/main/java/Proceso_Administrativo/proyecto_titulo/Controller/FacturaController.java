@@ -42,18 +42,20 @@ public class FacturaController {
         return ResponseEntity.ok(facturaService.obtenerPorId(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'ADMIN')")
     @PostMapping
     public ResponseEntity<FacturaResponseDTO> crearFactura(@Valid @RequestBody FacturaResquestDto dto) {
         return new ResponseEntity<>(facturaService.guardarFactura(dto), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<FacturaResponseDTO> actualizarFactura(@PathVariable Long id,
                                                                 @Valid @RequestBody FacturaResquestDto dto) {
         return ResponseEntity.ok(facturaService.actualizarFactura(id, dto));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarFactura(@PathVariable Long id) {
         facturaService.eliminarFactura(id);
@@ -67,13 +69,13 @@ public class FacturaController {
         return ResponseEntity.ok(facturaService.obtenerPorEstadoVencimiento(estado, fechaVencimiento));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'ADMIN')")
     @PutMapping("/{id}/restaurar")
     public ResponseEntity<FacturaResponseDTO> restaurarFactura(@PathVariable Long id) {
         return ResponseEntity.ok(facturaService.restaurarFactura(id));
     }
 
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'ADMIN')")
     @GetMapping("/papelera")
     public ResponseEntity<List<FacturaResponseDTO>> verPapelera() {
         return ResponseEntity.ok(facturaService.obtenerEliminadas());
@@ -84,6 +86,7 @@ public class FacturaController {
         return ResponseEntity.ok(historialEstadoService.obtenerHistorialPorFactura(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'ADMIN')")
     @PostMapping("/{id}/documento")
     public ResponseEntity<FacturaResponseDTO> subirDocumento(@PathVariable Long id,
                                                              @RequestParam("archivo") MultipartFile archivo) {
