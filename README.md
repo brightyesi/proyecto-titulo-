@@ -85,8 +85,10 @@ spring.mail.password=APP_PASSWORD_DE_GMAIL
 ### 3. Ejecutar
 
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
+
+> En Windows (PowerShell): `.\mvnw.cmd spring-boot:run`
 
 La API queda disponible en `http://localhost:8081`.
 
@@ -163,6 +165,32 @@ src/main/java/Proceso_Administrativo/proyecto_titulo/
 | Motor de alertas | Diaria 08:00 | Avisa facturas que vencen en 5/3/0 días |
 | Resumen semanal | Lunes 09:00 | Resumen de vencimientos a administradores |
 | Limpieza de papelera | Diaria 00:00 | Borra definitivo tras 30 días |
+
+---
+
+## Tests
+
+El proyecto incluye pruebas unitarias de la capa de servicios (lógica de negocio)
+con **JUnit 5** y **Mockito**, más una prueba de integración que valida el
+arranque del contexto con **H2** (base de datos en memoria).
+
+| Clase de prueba | Cubre |
+|---|---|
+| `AlertaServiceTest` | Motor de alertas (5/3/0 días, anti-duplicados) |
+| `FacturaServiceTest` | Soft delete, restaurar, historial de estados |
+| `ResumenSemanalServiceTest` | Resumen semanal de vencimientos |
+| `UserServiceTest` | Login, creación y desactivación de usuarios |
+| `ProveedorServiceTest` | Creación y desactivación de proveedores |
+
+Los tests no requieren PostgreSQL: usan H2 en memoria mediante el perfil `test`.
+
+Ejecutar todos los tests:
+
+```bash
+./mvnw test
+```
+
+> En Windows (PowerShell): `.\mvnw.cmd test`
 
 ---
 
