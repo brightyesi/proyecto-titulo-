@@ -98,7 +98,7 @@ public class AlertaServiceTest {
     @DisplayName("Motor alecta envia correo para factura que vence hoy 0 dias ")
     void verificarVencimiento_factura0dias(){
         AlertConfig config3 = configDias(0);
-        LocalDate fechaObjetivo = LocalDate.now().plusDays(3);
+        LocalDate fechaObjetivo = LocalDate.now().plusDays(0);
         factura.setFechaVencimiento(fechaObjetivo);
 
         when(alertaConfigRepository.findByActivoTrue()).thenReturn(List.of(config3));
@@ -111,6 +111,35 @@ public class AlertaServiceTest {
 
     }
 
+    @Test
+    @DisplayName("No envia correo si la alerta ya fue enviada antes")
+    void verificarVencimiento_alertaYaEnviada(){
+        AlertConfig config5 = configDias(5);
+        LocalDate fechaObjetivo = LocalDate.now().plusDays(5);
+        factura.setFechaVencimiento(fechaObjetivo);
 
+        when(alertaConfigRepository.findByActivoTrue()).thenReturn(List.of(config5));
+        when(facturaRepository.findByEstadoAndFechaVencimientoAndEliminadoFalse(EstadoFactura.PENDIENTE, fechaObjetivo))
+                .thenReturn(List.of(factura));
+        // se simula si ya se envio
+        when(alertaRepository.existsByFacturaAndDiasPreviosAndEnviada(factura,5,true)).thenReturn(true);
+
+        alertaService.verificarVencimientos();
+        //no debe mandar ni guardar nada de correo
+        verify(emailService, never()).enviarAlertaVencimiento(any(), any(), anyInt());
+        verify(alertaRepository,never()).save(any(Alerta.class));
+    }
+
+    @Test
+    @DisplayName("No hace nada si no hay configuraciones de alerta activas")
+    void verificarVencimiento_sinConfiguraciones() {
+        when(alertaConfigRepository.findByActivoTrue()).thenReturn(List.of());
+
+        alertaService.verificarVencimientos();
+
+        verify(facturaRepository, never())
+                .findByEstadoAndFechaVencimientoAndEliminadoFalse(any(), any());
+        verify(emailService, never()).enviarAlertaVencimiento(any(), any(), anyInt());
+    }
 
 }
