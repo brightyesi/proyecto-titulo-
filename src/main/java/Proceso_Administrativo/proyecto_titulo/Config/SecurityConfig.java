@@ -44,8 +44,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Acceso público al Frontend de React compilado
+                        .requestMatchers("/", "/index.html", "/static/**", "/assets/**", "/favicon.ico").permitAll()
+                        // 2. Acceso público a endpoints de autenticación y documentación
                         .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/admin/usuarios/**").permitAll()
+                        // 3. Cualquier otra petición requiere JWT válido
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
