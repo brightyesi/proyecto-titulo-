@@ -10,6 +10,7 @@ import Proceso_Administrativo.proyecto_titulo.Repository.RolRepository;
 import Proceso_Administrativo.proyecto_titulo.Repository.UserRepository;
 import Proceso_Administrativo.proyecto_titulo.Security.JwtService;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,9 +43,8 @@ public class UserService {
         this.authenticationManager = authenticationManager;
     }
 
-    // ──────────────────────────────────────────
+
     // REGISTRO
-    // ──────────────────────────────────────────
     @Transactional
     public UserResponse regitrar(ResgisterResquest resquest) {
         if (userRepository.existsByEmail(resquest.getCorreo())) {
@@ -72,9 +72,7 @@ public class UserService {
         return toResponse(token, usuario);
     }
 
-    // ──────────────────────────────────────────
     // LOGIN
-    // ──────────────────────────────────────────}
     @Transactional
     public UserResponse login(LoginRequest request) {
         try {
@@ -102,9 +100,7 @@ public class UserService {
         return toResponse(token, user);
     }
 
-    // ──────────────────────────────────────────
     // Helper
-    // ──────────────────────────────────────────
     private UserResponse toResponse(String token, User usuario) {
         return new UserResponse(
                 token,
@@ -164,5 +160,26 @@ public class UserService {
                 .rol(usuario.getRol().getNameRol().name())
                 .activo(usuario.isActivo())
                 .build();
+    }
+
+    @Transactional
+    public void activarUsuario(Long id) {
+        User usuario = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+        usuario.setActivo(true);
+        userRepository.save(usuario);
+    }
+
+    @Transactional
+    public void eliminarDefinitivo(Long id) {
+        User usuario = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+        try {
+            userRepository.delete(usuario);
+            userRepository.flush(); //fuerza el borrado
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException(
+                    "No se puede eliminar: el usuario tiene facturas asociadas. Solo se puede desactivar.");
+        }
     }
 }

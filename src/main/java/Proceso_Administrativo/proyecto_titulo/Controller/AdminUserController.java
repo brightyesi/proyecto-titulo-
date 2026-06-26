@@ -40,4 +40,16 @@ public class AdminUserController {
         userService.eliminarUsuario(id);
         return ResponseEntity.ok(new MensajeResponse("Usuario desactivado correctamente", true));
     }
+
+    @PutMapping("/{id}/activar")
+    public ResponseEntity<MensajeResponse> activar(@PathVariable Long id) {
+        userService.activarUsuario(id);
+        return ResponseEntity.ok(new MensajeResponse("Usuario activado correctamente", true));
+    }
+
+    @DeleteMapping("/{id}/definitivo")
+    public ResponseEntity<MensajeResponse> eliminarDefinitivo(@PathVariable Long id) {
+        userService.eliminarDefinitivo(id);
+        return ResponseEntity.ok(new MensajeResponse("Usuario eliminado definitivamente", true));
+    }
 }
