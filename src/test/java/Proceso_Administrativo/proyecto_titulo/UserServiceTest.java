@@ -136,4 +136,44 @@ public class UserServiceTest {
         assertThrows(RuntimeException.class, () -> userService.eliminarUsuario(99L));
         verify(userRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("Activar usuario lo deja activo")
+    void activarUsuario_exito() {
+        usuario.setActivo(false);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        userService.activarUsuario(1L);
+
+        assertTrue(usuario.isActivo());
+        verify(userRepository, times(1)).save(usuario); // se guardó
+    }
+
+    @Test
+    @DisplayName("Activar usuario inexistente lanza excepcion")
+    void activarUsuario_noEncontrado() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> userService.activarUsuario(99L));
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Eliminar definitivo borra el usuario")
+    void eliminarDefinitivo_exito() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        userService.eliminarDefinitivo(1L);
+
+        verify(userRepository, times(1)).delete(usuario);
+    }
+
+    @Test
+    @DisplayName("Eliminar definitivo de usuario inexistente lanza excepcion")
+    void eliminarDefinitivo_noEncontrado() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> userService.eliminarDefinitivo(99L));
+        verify(userRepository, never()).delete(any());
+    }
 }

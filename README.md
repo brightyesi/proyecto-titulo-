@@ -93,8 +93,12 @@ spring.mail.password=APP_PASSWORD_DE_GMAIL
 La API queda disponible en `http://localhost:8081`.
 
 Al primer arranque, se crean automáticamente los roles
-(`ROLE_ADMIN`, `ROLE_ADMINISTRADOR`, `ROLE_EJECUTIVO`) y las configuraciones
-de alerta (5, 3 y 0 días).
+(`ROLE_ADMIN`, `ROLE_ADMINISTRADOR`, `ROLE_EJECUTIVO`), las configuraciones
+de alerta (5, 3 y 0 días) y un usuario ADMIN inicial para poder ingresar y
+gestionar el resto de las cuentas.
+
+> Las credenciales del administrador inicial se definen en `DataInitializer`.
+> En un entorno real deben cambiarse por credenciales seguras.
 
 ---
 
@@ -111,6 +115,8 @@ de alerta (5, 3 y 0 días).
 | POST | `/admin/usuarios` | Crear usuario |
 | GET | `/admin/usuarios` | Listar usuarios |
 | DELETE | `/admin/usuarios/{id}` | Desactivar usuario |
+| PUT | `/admin/usuarios/{id}/activar` | Reactivar usuario |
+| DELETE | `/admin/usuarios/{id}/definitivo` | Eliminar definitivamente |
 
 ### Facturas
 | Método | Ruta | Acceso |
