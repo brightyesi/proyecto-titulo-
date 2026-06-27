@@ -66,10 +66,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://localhost:5174"
-        ));
+        // Permitimos TODOS los orígenes para no pelear con las URLs de S3
+        configuration.setAllowedOriginPatterns(List.of("*"));
 
         configuration.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "DELETE", "OPTIONS"
@@ -79,6 +77,8 @@ public class SecurityConfig {
                 "Authorization", "Content-Type"
         ));
 
+        // OJO: Si usas allowedOriginPatterns con "*", debes cambiar esto a TRUE
+        // o Spring podría quejarse. Tu configuración actual lo requiere.
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

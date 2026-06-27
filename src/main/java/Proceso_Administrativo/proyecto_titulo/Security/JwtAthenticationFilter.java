@@ -1,6 +1,5 @@
 package Proceso_Administrativo.proyecto_titulo.Security;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ import java.io.IOException;
 public class JwtAthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    // FIX: inyectar la implementación concreta, no la interfaz
     private final UserDetailsServiceImpl userDetailsService;
 
     public JwtAthenticationFilter(JwtService jwtService,
@@ -37,6 +35,12 @@ public class JwtAthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        // 🚨 CAMBIO AQUÍ: Responder de inmediato a las peticiones CORS Preflight (OPTIONS)
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
 
