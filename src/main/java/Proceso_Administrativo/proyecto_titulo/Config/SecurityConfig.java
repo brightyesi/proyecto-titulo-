@@ -28,7 +28,6 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    // Inyectamos UserDetailsServiceImpl directamente en vez de definirlo aqui
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAthenticationFilter jwtAuthFilter;
 
@@ -39,7 +38,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -56,7 +55,8 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider())
+                // Le pasamos el bean inyectado directamente aquí abajo
+                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -72,16 +72,11 @@ public class SecurityConfig {
         ));
 
         configuration.setAllowedMethods(List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "OPTIONS"
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
 
         configuration.setAllowedHeaders(List.of(
-                "Authorization",
-                "Content-Type"
+                "Authorization", "Content-Type"
         ));
 
         configuration.setAllowCredentials(true);
@@ -93,9 +88,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
+        // Corregido: Pasamos el userDetailsService directamente al constructor del DaoAuthenticationProvider
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 
