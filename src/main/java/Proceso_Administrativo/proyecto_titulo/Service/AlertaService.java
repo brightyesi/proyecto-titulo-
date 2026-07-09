@@ -34,7 +34,7 @@ public class AlertaService {
         this.emailService = emailService;
     }
 
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void verificarVencimientos() {
 
         log.info("=== Motor de alertas iniciado: {} ===", LocalDate.now());
